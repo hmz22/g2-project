@@ -3,9 +3,10 @@ import ReactDOM from "react-dom";
 import { BrowserRouter } from "react-router-dom";
 import "antd/dist/antd.css";
 import "./index.css";
-import App from "./jalase4/App";
+import App from "./project/App";
 import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
-import { ApolloClient, InMemoryCache } from "@apollo/client";
+import { ApolloClient, InMemoryCache, ApolloProvider } from "@apollo/client";
+import { ConfigProvider } from "antd";
 
 export const client = new ApolloClient({
   uri: "http://localhost:4000/graphql",
@@ -13,9 +14,13 @@ export const client = new ApolloClient({
 });
 
 ReactDOM.render(
-  <BrowserRouter>
-    <App />
-  </BrowserRouter>,
+  <ConfigProvider direction="rtl">
+    <ApolloProvider client={client}>
+      <BrowserRouter>
+        <App />
+      </BrowserRouter>
+    </ApolloProvider>
+  </ConfigProvider>,
   document.getElementById("root")
 );
 
