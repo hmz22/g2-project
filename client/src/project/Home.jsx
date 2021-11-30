@@ -1,8 +1,25 @@
 import React from "react";
 import { useQuery, gql } from "@apollo/client";
-import { Table, Layout } from "antd";
+import {
+  Table,
+  Layout,
+  Button,
+  Space,
+  Divider,
+  Tooltip,
+  Breadcrumb,
+} from "antd";
+import {
+  DeleteOutlined,
+  EditOutlined,
+  PlusOutlined,
+  HomeOutlined,
+} from "@ant-design/icons";
+import { useHistory } from "react-router";
 
 function Home() {
+  const { push } = useHistory();
+
   const { loading, data, error } = useQuery(gql`
     query GetAllMember {
       members {
@@ -38,13 +55,48 @@ function Home() {
       title: "تاریخ تولد",
       dataIndex: "birthdate",
     },
+    {
+      key: "action",
+      render: (text, record) => (
+        <Space size="middle" split={<Divider type="vertical" />}>
+          <Tooltip title="ویرایش">
+            <EditOutlined
+              style={{ fontSize: 18, color: "#52c41a", cursor: "pointer" }}
+            />
+          </Tooltip>
+          <Tooltip title="حذف">
+            <DeleteOutlined
+              style={{ fontSize: 18, color: "#f5222d", cursor: "pointer" }}
+            />
+          </Tooltip>
+        </Space>
+      ),
+      width: "10%",
+    },
   ];
 
   return (
     <>
-      <h1>Home Page</h1>
+      <Breadcrumb style={{ background: "white", padding: "10px" }}>
+        <Breadcrumb.Item>
+          <HomeOutlined />
+        </Breadcrumb.Item>
+        <Breadcrumb.Item>کاربران</Breadcrumb.Item>
+      </Breadcrumb>
 
-      <Layout.Content style={{ padding: "50px 50px", background: "white" }}>
+      <Layout.Content
+        style={{ padding: "50px 50px", background: "white", marginTop: 20 }}
+      >
+        <div style={{ display: "flex", marginBottom: 15 }}>
+          <Button
+            onClick={() => push("/new")}
+            type="primary"
+            icon={<PlusOutlined />}
+          >
+            جدید
+          </Button>
+        </div>
+
         <Table
           loading={loading}
           size="small"

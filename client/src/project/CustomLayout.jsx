@@ -14,7 +14,10 @@ function CustomLayout({ children }) {
           right: 0,
         }}
       >
-        <div className="logo" />
+        <div
+          className="logo"
+          style={{ height: 50, background: "white", margin: 20 }}
+        />
         <Menu theme="dark" mode="inline">
           <Menu.Item key="1" icon={<TeamOutlined />}>
             <Link to="/">کاربران</Link>
