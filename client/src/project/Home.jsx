@@ -1,5 +1,5 @@
 import React from "react";
-import { useQuery, gql } from "@apollo/client";
+import { useQuery, gql, useMutation } from "@apollo/client";
 import {
   Table,
   Layout,
@@ -8,6 +8,7 @@ import {
   Divider,
   Tooltip,
   Breadcrumb,
+  message,
 } from "antd";
 import {
   DeleteOutlined,
@@ -16,22 +17,34 @@ import {
   HomeOutlined,
 } from "@ant-design/icons";
 import { useHistory } from "react-router";
+import { GET_MEMBERS } from "../graphql/query/member.query";
+import { DELETE_MEMBER } from "../graphql/mutation/member.mutation";
 
 function Home() {
   const { push } = useHistory();
 
-  const { loading, data, error } = useQuery(gql`
-    query GetAllMember {
-      members {
-        _id
-        firstname
-        lastname
-        birthdate
-      }
-    }
-  `);
+  const { loading, data, error } = useQuery(GET_MEMBERS);
 
-  console.log("loading: ", loading, "data: ", data, "error: ", error);
+  const [deleteItem] = useMutation(DELETE_MEMBER, {
+    onError: () => message.error("خطا در انجام حذف"),
+  });
+
+  const handleDelete = (record) => {
+    deleteItem({
+      variables: {
+        id: record._id,
+      },
+      update: (cache) => {
+        cache.modify({
+          fields: {
+            members() {},
+          },
+        });
+
+        message.success("عملیات حذف با موفقیت انجام شد");
+      },
+    });
+  };
 
   if (error) {
     return (
@@ -61,11 +74,13 @@ function Home() {
         <Space size="middle" split={<Divider type="vertical" />}>
           <Tooltip title="ویرایش">
             <EditOutlined
+              onClick={() => push(`/edit/${record._id}`)}
               style={{ fontSize: 18, color: "#52c41a", cursor: "pointer" }}
             />
           </Tooltip>
           <Tooltip title="حذف">
             <DeleteOutlined
+              onClick={() => handleDelete(record)}
               style={{ fontSize: 18, color: "#f5222d", cursor: "pointer" }}
             />
           </Tooltip>

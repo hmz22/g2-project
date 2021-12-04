@@ -11,6 +11,7 @@ function App() {
       <CustomLayout>
         <Switch>
           <Route exact path="/404" component={NotFoundPage} />
+          <Route exact path="/edit/:memberId" component={MemberForm} />
           <Route exact path="/new" component={MemberForm} />
           <Route exact path="/" component={Home} />
           <Redirect to="/404" />
